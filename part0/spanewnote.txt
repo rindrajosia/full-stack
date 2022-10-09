@@ -1,6 +1,6 @@
 note over browser:
 browser starts executing js-code
-by adding the new note to the note list then
+by adding the new note to the note list (DOM) then
 send the new note to the server with the appropriate
 Content-Type header
 end note
