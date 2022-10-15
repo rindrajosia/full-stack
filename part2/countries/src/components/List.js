@@ -7,7 +7,7 @@ const List = ({countries, changeHidden}) => {
           {
             countries.map((country, index) => {
               return(
-                <li key={country.name}>
+                <li key={country.callingCodes}>
                   {country.name}
                   <Bouton click={() => changeHidden(index)} text="show" />
                 </li>
@@ -15,7 +15,7 @@ const List = ({countries, changeHidden}) => {
             })
           }
         </ul>
-      
+
   )
 }
 
