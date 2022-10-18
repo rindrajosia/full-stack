@@ -16,7 +16,7 @@ const App = () => {
 
   useEffect(()=> {
     phone
-        .getAll('http://localhost:3001/persons')
+        .getAll('/api/persons')
         .then(response => {
           setPersons(persons.concat(response));
           setErrorMessage(
@@ -55,7 +55,7 @@ const App = () => {
   const removeHandler = (person) =>{
      if(window.confirm(`Delete ${person.name} ?`)) {
        phone
-           .remove('http://localhost:3001/persons/', person.id)
+           .remove('/api/persons/', person.id)
            .then(response => {
              setPersons(persons.filter(n => n.id !== person.id));
 
@@ -109,7 +109,7 @@ const App = () => {
           replace the old number with new one ?`)) {
 
           phone
-          .update(`http://localhost:3001/persons/${pers.id}`, data)
+          .update(`/api/persons/${pers.id}`, data)
           .then(response => {
             setPersons(persons.map(n => n.id !== pers.id ? n : response));
 
@@ -147,7 +147,7 @@ const App = () => {
       }
 
       phone
-      .create('http://localhost:3001/persons', data)
+      .create('/api/persons', data)
       .then(response => {
         setPersons(persons.concat(response));
 
@@ -162,7 +162,7 @@ const App = () => {
       })
       .catch(error => {
         setErrorMessage(
-          `Error from Server`
+          `${error.response.data.error}`
         )
         setStyle('error')
 
