@@ -1,8 +1,0 @@
-note over browser:
-browser starts executing js-code
-by adding the new note to the note list (DOM) then
-send the new note to the server with the appropriate
-Content-Type header
-end note
-
-browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
