@@ -19,6 +19,8 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :d
   skip: (req, res) => { return req.method !== "POST" }
 }));
 
+app.use(express.static('build'));
+
 
 
 app.get('/api/persons', (req, res) => {
