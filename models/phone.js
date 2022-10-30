@@ -1,17 +1,17 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
-const url = process.env.MONGODB_URI;
+const url = process.env.MONGODB_URI
 
-console.log('Connecting to', url);
+console.log('Connecting to', url)
 
 mongoose
   .connect(url)
-  .then(result => {
-    console.log('Connected to MongoDB');
+  .then(result => { // eslint-disable-line no-unused-vars
+    console.log('Connected to MongoDB')
   })
   .catch(error => {
     console.log('error connecting to MongoDB:', error.message)
-  });
+  })
 
 const phoneSchema = mongoose.Schema({
   name: {
@@ -24,7 +24,7 @@ const phoneSchema = mongoose.Schema({
     minLength: 8,
     validate: {
       validator: function(v) {
-        return /^\d{2,3}-\d{7,}/.test(v);
+        return /^\d{2,3}-\d{7,}/.test(v)
       },
       message: props => `${props.value} is not a valid phone number!`
     },
@@ -40,4 +40,4 @@ phoneSchema.set('toJSON', {
   }
 })
 
-module.exports = mongoose.model('Phone', phoneSchema);
+module.exports = mongoose.model('Phone', phoneSchema)

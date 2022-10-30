@@ -1,19 +1,19 @@
 const isNameNotEmpty = (name) => {
-    if(name === '') {
-      return false;
-    }
+  if(name === '') {
+    return false
+  }
 
-    return true;
+  return true
 }
 
 const isNameUnique = (name, array) => {
-    const pers = array.find(n => n.name.toUpperCase() === name.toUpperCase());
+  const pers = array.find(n => n.name.toUpperCase() === name.toUpperCase())
 
-    if(pers) {
-      return false;
-    }
+  if(pers) {
+    return false
+  }
 
-    return true;
+  return true
 }
 
 module.exports = { isNameNotEmpty, isNameUnique }
