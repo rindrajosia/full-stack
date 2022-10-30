@@ -125,7 +125,7 @@ const App = () => {
           })
           .catch(error => {
             setErrorMessage(
-              `'${pers.name}' doesn't exist`
+              `${error.response.data.error}`
             )
             setStyle('error')
 
@@ -133,7 +133,6 @@ const App = () => {
               setErrorMessage(null)
             }, 5000)
 
-            setPersons(persons.filter(n => n.id !== pers.id));
           });
         }
 
