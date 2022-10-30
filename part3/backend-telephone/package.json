@@ -6,17 +6,22 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "lint": "eslint .",
+    "deploy": "git push heroku master",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "eslint": "^8.26.0",
     "nodemon": "^2.0.20"
   },
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "mongoose": "^6.6.5",
     "morgan": "^1.10.0"
   }
 }
