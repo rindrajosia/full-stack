@@ -10,8 +10,8 @@ const app = express()
 
 
 mongoose
-  .connect(config.mongoUrl)
-  .then(result => {
+  .connect(config.MONGODB_URI)
+  .then(result => { // eslint-disable-line no-unused-vars
     logger.info('Connected to mongodb')
   })
   .catch(error => {
