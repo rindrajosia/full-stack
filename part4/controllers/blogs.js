@@ -18,7 +18,10 @@ blogsRouter.get('/', async (req, res, next) => {
 
 blogsRouter.post('/', async (req, res, next) => {
 
-  const blog = new Blog(req.body)
+  const blog = new Blog({
+    ...req.body,
+    likes: req.body.likes || 0
+  })
 
   try {
 

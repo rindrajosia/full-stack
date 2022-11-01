@@ -9,12 +9,20 @@ const api = supertest(app)
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-  let blogObject = new Blog(helper.initialBlogs[0])
-  await blogObject.save()
 
-  blogObject = new Blog(helper.initialBlogs[1])
-  await blogObject.save()
+  const blogObjects = helper.initialBlogs
+    .map(blog => new Blog(blog))
+
+  const promiseArray = blogObjects.map(blog => blog.save())
+
+  await Promise.all(promiseArray)
+
+
 })
+
+
+
+
 
 test('Blog is added', async () => {
   const newBlog = {
@@ -41,6 +49,10 @@ test('Blog is added', async () => {
   )
 })
 
+
+
+
+
 test('Blog lists are returned as JSON', async () => {
   await api
     .get('/api/blogs')
@@ -49,11 +61,19 @@ test('Blog lists are returned as JSON', async () => {
 
 }, 500000)
 
+
+
+
+
 test('The blog lists return the correct amount of data', async () => {
   const response = await api.get('/api/blogs')
 
   expect(response.body).toHaveLength(helper.initialBlogs.length)
 })
+
+
+
+
 
 
 test('a specific blog is within the returned Blog lists', async () => {
@@ -64,6 +84,80 @@ test('a specific blog is within the returned Blog lists', async () => {
   expect(titles).toContain(
     'React patterns'
   )
+})
+
+
+
+
+
+test('Verify that the unique identifier property of the blog posts is named id', async () => {
+  const response = await api.get('/api/blogs')
+
+
+  expect(response.body[0].id).toBeDefined()
+})
+
+
+
+
+
+
+
+
+test('Verify that if the likes property is missing from the request, it will default to the value 0', async () => {
+  await Blog.deleteMany({})
+  const newBlog = {
+    title: 'Type wars',
+    author: 'Robert C. Martin',
+    url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html'
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+
+  const response = await api.get('/api/blogs')
+
+
+  expect(response.body[0].likes).toBe(0)
+})
+
+
+
+test('Verify that if the title properties are missing from the request data, it responds with the status code 400 Bad Request', async () => {
+
+  const newBlog = {
+    author: 'Robert C. Martin',
+    url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
+    likes: 1,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+})
+
+test('Verify that if the URL properties are missing from the request data, it responds with the status code 400 Bad Request', async () => {
+
+  const newBlog = {
+    author: 'Robert C. Martin',
+    title: 'Go To Statement Considered Harmful',
+    likes: 1,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
 })
 
 
