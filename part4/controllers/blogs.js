@@ -1,11 +1,11 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const middleware = require('../utils/middleware')
+
 
 blogsRouter.get('/', async (req, res, next) => {
   try {
-    const blogs = await Blog.find({})
-
-    const response = await blogs
+    const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
 
     res.json(blogs)
   } catch (exeption){
@@ -24,6 +24,8 @@ blogsRouter.get('/:id', async (req, res, next) => {
 
     const result = await Blog.findById(req.params.id)
 
+
+
     if(result) {
       res.json(result)
     } else {
@@ -39,18 +41,30 @@ blogsRouter.get('/:id', async (req, res, next) => {
 
 
 
-blogsRouter.post('/', async (req, res, next) => {
+blogsRouter.post('/', middleware.userExtractor, async (req, res, next) => {
 
-  const blog = new Blog({
-    ...req.body,
-    likes: req.body.likes || 0
-  })
+
 
   try {
 
-    const result = await blog.save()
+    const user = req.user
 
-    res.status(201).json(result)
+
+    const blog = new Blog({
+      title: req.body.title,
+      author: req.body.author,
+      url: req.body.url,
+      likes: req.body.likes || 0,
+      user
+    })
+
+    const savedBlog = await blog.save()
+
+    user.blogs = user.blogs.concat(savedBlog._id)
+
+    await user.save()
+
+    res.status(201).json(savedBlog)
   } catch (exeption){
     next(exeption)
   }
@@ -58,11 +72,19 @@ blogsRouter.post('/', async (req, res, next) => {
 })
 
 
-blogsRouter.delete('/:id', async (req, res, next) => {
+blogsRouter.delete('/:id', middleware.userExtractor, async (req, res, next) => {
+
 
   try {
+    const blog = await Blog.findById(req.params.id)
 
-    const result = await Blog.findByIdAndRemove(req.params.id)
+    const user = req.user
+
+    if (!user.id || blog.user.toString() !== user.id.toString()) {
+      return res.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    const result = await blog.deleteOne({ _id: req.params.id })
 
     if(result) {
       res.status(204).end()

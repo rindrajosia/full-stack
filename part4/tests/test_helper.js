@@ -1,4 +1,14 @@
 const Blog = require('../models/blog')
+const User = require('../models/user')
+const app = require('../app')
+const supertest = require('supertest')
+
+const api = supertest(app)
+
+
+const initalUsers = [
+  { username: 'rindra', name: 'josia', passwordHash:'Sekret1' }
+]
 
 const initialBlogs = [
   {
@@ -16,6 +26,14 @@ const initialBlogs = [
 ]
 
 
+const existingUser = {
+  username: 'rindra',
+  password: 'Sekret1'
+}
+
+
+
+
 const nonExistingId = async () => {
   const blog = new Blog({ title: 'willremovethissoon', author: 'test', url: 'https://reactplessons.com/', likes: 7 })
   await blog.save()
@@ -29,7 +47,26 @@ const blogsInDb = async () => {
   return blogs.map(blog => blog.toJSON())
 }
 
+const usersInDb = async () => {
+  const users = await User.find({})
+  return users.map(user => user.toJSON())
+}
+
+const token = async () => {
+  const response = await api
+    .post('/api/login')
+    .send(existingUser)
+
+  return response.body.token
+}
+
 
 module.exports = {
-  initialBlogs, nonExistingId, blogsInDb
+  initialBlogs,
+  nonExistingId,
+  blogsInDb,
+  initalUsers,
+  usersInDb,
+  existingUser,
+  token
 }
